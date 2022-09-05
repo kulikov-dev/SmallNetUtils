@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using SmallNetUtils.DateTimeUtils;
+using SmallNetUtils.Extensions;
 
 namespace SmallNetUtils.Data
 {
@@ -161,6 +161,16 @@ namespace SmallNetUtils.Data
         }
 
         /// <summary>
+        /// Check if dateInterval is equal to DateInterval type
+        /// </summary>
+        /// <param name="dateType"> Interval type </param>
+        /// <returns> Flag if equal </returns>
+        public bool IsEqualToIntervalType(Microsoft.VisualBasic.DateInterval dateType)
+        {
+            return Begin.IsStartOfIntervalType(dateType) && End == End.AddByType(dateType);
+        }
+
+        /// <summary>
         /// Check if interval contains another interval
         /// </summary>
         /// <param name="interval2"> Second interval </param>
@@ -234,14 +244,14 @@ namespace SmallNetUtils.Data
         {
             var result = new List<DateInterval>();
             var dateBegin = Begin;
-            var dateEnd = Begin.AddInterval(size);
+            var dateEnd = Begin.AddByType(size);
 
             while (dateEnd <= End)
             {
                 result.Add(new DateInterval(dateBegin, dateEnd));
 
                 dateBegin = dateEnd;
-                dateEnd = dateEnd.AddInterval(size);
+                dateEnd = dateEnd.AddByType(size);
             }
 
             return result;
