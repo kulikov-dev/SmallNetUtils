@@ -115,9 +115,9 @@ namespace SmallNetUtils.Extensions
             var hash = sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(input));
             var hashColor = Color.FromArgb(BitConverter.ToInt32(hash, 0));
             var alpha = hashColor.A;
-            var r = ((hashColor.R + alpha) % 256) / 32 * 32;
-            var g = ((hashColor.G + alpha) % 256) / 32 * 32;
-            var b = ((hashColor.B + alpha) % 256) / 32 * 32;
+            var r = (hashColor.R + alpha) % 256 / 32 * 32;
+            var g = (hashColor.G + alpha) % 256 / 32 * 32;
+            var b = (hashColor.B + alpha) % 256 / 32 * 32;
 
             return Color.FromArgb(r, g, b);
         }
@@ -141,13 +141,13 @@ namespace SmallNetUtils.Extensions
 
             if (lighting > 0.5)
             {
-                fMax = lighting - (lighting * saturation) + saturation;
-                fMin = lighting + (lighting * saturation) - saturation;
+                fMax = lighting - lighting * saturation + saturation;
+                fMin = lighting + lighting * saturation - saturation;
             }
             else
             {
-                fMax = lighting + (lighting * saturation);
-                fMin = lighting - (lighting * saturation);
+                fMax = lighting + lighting * saturation;
+                fMin = lighting - lighting * saturation;
             }
 
             var iSextant = (int)Math.Floor(hue / 60f);
@@ -158,14 +158,14 @@ namespace SmallNetUtils.Extensions
             }
 
             hue /= 60f;
-            hue -= 2f * (float)Math.Floor(((iSextant + 1f) % 6f) / 2f);
+            hue -= 2f * (float)Math.Floor((iSextant + 1f) % 6f / 2f);
             if (iSextant % 2 == 0)
             {
-                fMid = (hue * (fMax - fMin)) + fMin;
+                fMid = hue * (fMax - fMin) + fMin;
             }
             else
             {
-                fMid = fMin - (hue * (fMax - fMin));
+                fMid = fMin - hue * (fMax - fMin);
             }
 
             var iMax = Convert.ToInt32(fMax * 255);

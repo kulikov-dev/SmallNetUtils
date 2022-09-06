@@ -31,7 +31,7 @@ namespace SmallNetUtils.Utils
         }
 
         /// <summary>
-        /// Show file in the Explorer
+        /// Show a file in the Explorer
         /// </summary>
         /// <param name="filePath"> File path </param>
         internal static void ShowFileInExplorer(string filePath)
@@ -47,7 +47,7 @@ namespace SmallNetUtils.Utils
         }
 
         /// <summary>
-        /// Open folder in the Explorer
+        /// Open a folder in the Explorer
         /// </summary>
         /// <param name="folderPath"> Folder path </param>
         /// <param name="createNotExisted"> Flag if need to create a folder if not exists </param>
