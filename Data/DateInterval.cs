@@ -71,7 +71,7 @@ namespace SmallNetUtils.Data
         /// </summary>
         /// <param name="item1"> First interval </param>
         /// <param name="item2"> Second interval </param>
-        /// <returns> Flag if intervals are note equal </returns>
+        /// <returns> Flag if intervals are not equal </returns>
         public static bool operator !=(DateInterval item1, DateInterval item2)
         {
             return !(item1 == item2);
