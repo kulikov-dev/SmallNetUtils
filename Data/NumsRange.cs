@@ -1,6 +1,7 @@
-﻿using SmallNetUtils.Extensions;
+﻿using System.Globalization;
+using SmallNetUtils.Extensions;
 
-namespace SmallNetUtils.Data.Ranges
+namespace SmallNetUtils.Data
 {
     /// <summary>
     /// Class to store double range min-max
@@ -109,7 +110,7 @@ namespace SmallNetUtils.Data.Ranges
         /// </summary>
         /// <param name="obj"> Second range </param>
         /// <returns> Compare result </returns>
-        public int CompareTo(object obj)
+        public int CompareTo(object? obj)
         {
             if (obj == null)
             {
@@ -167,8 +168,8 @@ namespace SmallNetUtils.Data.Ranges
         /// <returns> String representation </returns>
         public string ToString(int precision)
         {
-            var min = Min == double.MinValue ? "<" : Math.Round(Min, precision >= 0 ? precision : 0, MidpointRounding.AwayFromZero).ToString();
-            var max = Max == double.MaxValue ? ">" : Math.Round(Max, precision >= 0 ? precision : 0, MidpointRounding.AwayFromZero).ToString();
+            var min = Min == double.MinValue ? "<" : Math.Round(Min, precision >= 0 ? precision : 0, MidpointRounding.AwayFromZero).ToString(CultureInfo.InvariantCulture);
+            var max = Max == double.MaxValue ? ">" : Math.Round(Max, precision >= 0 ? precision : 0, MidpointRounding.AwayFromZero).ToString(CultureInfo.InvariantCulture);
 
             return min + " - " + max;
         }

@@ -74,7 +74,7 @@ namespace SmallNetUtils.Extensions
         /// <param name="item2"> Item 2</param>
         /// <param name="eps"> Epsilon </param>
         /// <returns> Flag if equal </returns>
-        /// <remarks> It's more correct to use it to compare two double numbers instead of '==' </remarks>
+        /// <remarks> Floating-point comparison </remarks>
         public static bool EqualsEpsilon(this double item1, double item2, double eps = double.Epsilon)
         {
             return Math.Abs(item1 - item2) < eps;
@@ -87,7 +87,7 @@ namespace SmallNetUtils.Extensions
         /// <param name="item2"> Item 2</param>
         /// <param name="eps"> Epsilon </param>
         /// <returns> Flag if equal </returns>
-        /// <remarks> It's more correct to use it to compare two double numbers instead of '==' </remarks>
+        /// <remarks> Floating-point comparison </remarks>
         public static bool EqualsEpsilonNaN(this double item1, double item2, double eps = double.Epsilon)
         {
             if (double.IsNaN(item1) && double.IsNaN(item2))
@@ -105,7 +105,7 @@ namespace SmallNetUtils.Extensions
         /// <param name="item2"> Item 2</param>
         /// <param name="eps"> Epsilon </param>
         /// <returns> Flag if equal </returns>
-        /// <remarks> It's more correct to use it to compare two double numbers instead of '==' </remarks>
+        /// <remarks> Floating-point comparison </remarks>
         public static bool EqualsEpsilonNanInf(this double item1, double item2, double eps = double.Epsilon)
         {
             if (double.IsNegativeInfinity(item1) && double.IsNegativeInfinity(item2))
