@@ -1,4 +1,6 @@
-﻿using SmallNetUtils.Data;
+﻿using System;
+using SmallNetUtils.Data;
+using SmallNetUtils.Enums;
 
 namespace SmallNetUtils.Extensions
 {
@@ -36,7 +38,7 @@ namespace SmallNetUtils.Extensions
         /// <remarks> Including time start at 00:00:00 </remarks>
         public static bool IsQuarterStart(this DateTime date)
         {
-            return date.IsMonthStart() && date.Month is 1 or 4 or 7 or 10;
+            return date.IsMonthStart() && (date.Month == 1 || date.Month == 4 || date.Month == 7 || date.Month == 10);
         }
 
         /// <summary>
@@ -57,13 +59,23 @@ namespace SmallNetUtils.Extensions
         /// <returns> Quarter number </returns>
         public static int GetQuarter(this DateTime date)
         {
-            return date.Month switch
+            switch (date.Month)
             {
-                1 or 2 or 3 => 1,
-                4 or 5 or 6 => 2,
-                7 or 8 or 9 => 3,
-                _ => 4,
-            };
+                case 1:
+                case 2:
+                case 3:
+                    return 1;
+                case 4:
+                case 5:
+                case 6:
+                    return 2;
+                case 7:
+                case 8:
+                case 9:
+                    return 3;
+                default:
+                    return 4;
+            }
         }
 
         /// <summary>
@@ -76,18 +88,22 @@ namespace SmallNetUtils.Extensions
         {
             var quarter = date.GetQuarter();
 
-            if (isArabic)
+            if (!isArabic)
             {
-                return quarter switch
-                {
-                    1 => "I",
-                    2 => "II",
-                    3 => "III",
-                    _ => "IV"
-                };
+                return quarter.ToString();
             }
 
-            return quarter.ToString();
+            switch (quarter)
+            {
+                case 1:
+                    return "I";
+                case 2:
+                    return "II";
+                case 3:
+                    return "III";
+                default:
+                    return "IV";
+            }
         }
 
         /// <summary>
@@ -96,16 +112,21 @@ namespace SmallNetUtils.Extensions
         /// <param name="date"> Date </param>
         /// <param name="dateType"> Interval type </param>
         /// <returns> Flag if start </returns>
-        public static bool IsStartOfIntervalType(this DateTime date, Microsoft.VisualBasic.DateInterval dateType)
+        public static bool IsStartOfIntervalType(this DateTime date, DateIntervalType dateType)
         {
-            return dateType switch
+            switch (dateType)
             {
-                Microsoft.VisualBasic.DateInterval.Day => date.IsMidnight(),
-                Microsoft.VisualBasic.DateInterval.Month => date.Day == 1,
-                Microsoft.VisualBasic.DateInterval.Quarter => date.IsStartOfIntervalType(Microsoft.VisualBasic.DateInterval.Month) && date.Month is 1 or 4 or 7 or 10,
-                Microsoft.VisualBasic.DateInterval.Year => date.IsStartOfIntervalType(Microsoft.VisualBasic.DateInterval.Month) && date.Month == 1,
-                _ => throw new NotSupportedException("This DateInterval not supported.")
-            };
+                case DateIntervalType.Day:
+                    return date.IsMidnight();
+                case DateIntervalType.Month:
+                    return date.IsMonthStart();
+                case DateIntervalType.Quarter:
+                    return date.IsQuarterStart();
+                case DateIntervalType.Year:
+                    return date.IsYearStart();
+                default:
+                    throw new NotSupportedException("This DateInterval not supported.");
+            }
         }
 
         /// <summary>
@@ -115,16 +136,21 @@ namespace SmallNetUtils.Extensions
         /// <param name="dateType"> DateInterval type </param>
         /// <param name="amount"> Amount to add </param>
         /// <returns> Date by adding amount </returns>
-        public static DateTime AddByType(this DateTime date, Microsoft.VisualBasic.DateInterval dateType, int amount = 1)
+        public static DateTime AddByType(this DateTime date, DateIntervalType dateType, int amount = 1)
         {
-            return dateType switch
+            switch (dateType)
             {
-                Microsoft.VisualBasic.DateInterval.Day => date.AddDays(amount),
-                Microsoft.VisualBasic.DateInterval.Month => date.AddMonths(amount),
-                Microsoft.VisualBasic.DateInterval.Quarter => date.AddMonths(3 * amount),
-                Microsoft.VisualBasic.DateInterval.Year => date.AddYears(amount),
-                _ => throw new NotSupportedException("This DateInterval not supported.")
-            };
+                case DateIntervalType.Day:
+                    return date.AddDays(amount);
+                case DateIntervalType.Month:
+                    return date.AddMonths(amount);
+                case DateIntervalType.Quarter:
+                    return date.AddMonths(3 * amount);
+                case DateIntervalType.Year:
+                    return date.AddYears(amount);
+                default:
+                    throw new NotSupportedException("This DateInterval not supported.");
+            }
         }
 
         /// <summary>
@@ -134,16 +160,9 @@ namespace SmallNetUtils.Extensions
         /// <param name="dateType"> DateInterval type </param>
         /// <param name="amount"> Amount to subtract </param>
         /// <returns> Date by subtracting amount </returns>
-        public static DateTime SubtractByType(this DateTime date, Microsoft.VisualBasic.DateInterval dateType, int amount = 1)
+        public static DateTime SubtractByType(this DateTime date, DateIntervalType dateType, int amount = 1)
         {
-            return dateType switch
-            {
-                Microsoft.VisualBasic.DateInterval.Day => date.AddDays(-amount),
-                Microsoft.VisualBasic.DateInterval.Month => date.AddMonths(-amount),
-                Microsoft.VisualBasic.DateInterval.Quarter => date.AddMonths(-3 * amount),
-                Microsoft.VisualBasic.DateInterval.Year => date.AddYears(-amount),
-                _ => throw new NotSupportedException("This DateInterval not supported.")
-            };
+            return date.AddByType(dateType, -amount);
         }
 
         /// <summary>
@@ -152,7 +171,7 @@ namespace SmallNetUtils.Extensions
         /// <param name="date"> Date </param>
         /// <param name="dateType"> DateInterval type </param>
         /// <returns> Ceil date </returns>
-        public static DateTime Ceil(this DateTime date, Microsoft.VisualBasic.DateInterval dateType)
+        public static DateTime Ceil(this DateTime date, DateIntervalType dateType)
         {
             return date.IsStartOfIntervalType(dateType) ? date : date.AddByType(dateType).Floor(dateType);
         }
@@ -163,21 +182,35 @@ namespace SmallNetUtils.Extensions
         /// <param name="date"> Date </param>
         /// <param name="dateType"> DateInterval type </param>
         /// <returns> Floor date </returns>
-        public static DateTime Floor(this DateTime date, Microsoft.VisualBasic.DateInterval dateType)
+        public static DateTime Floor(this DateTime date, DateIntervalType dateType)
         {
-            return dateType switch
+            switch (dateType)
             {
-                Microsoft.VisualBasic.DateInterval.Month => new DateTime(date.Year, date.Month, 1),
-                Microsoft.VisualBasic.DateInterval.Quarter => date.Month switch
-                {
-                    1 or 2 or 3 => new DateTime(date.Year, 1, 1),
-                    4 or 5 or 6 => new DateTime(date.Year, 4, 1),
-                    7 or 8 or 9 => new DateTime(date.Year, 7, 1),
-                    _ => new DateTime(date.Year, 10, 1),
-                },
-                Microsoft.VisualBasic.DateInterval.Year => new DateTime(date.Year, 1, 1),
-                _ => throw new NotSupportedException("This DateInterval not supported.")
-            };
+                case DateIntervalType.Month:
+                    return new DateTime(date.Year, date.Month, 1);
+                case DateIntervalType.Quarter:
+                    switch (date.Month)
+                    {
+                        case 1:
+                        case 2:
+                        case 3:
+                            return new DateTime(date.Year, 1, 1);
+                        case 4:
+                        case 5:
+                        case 6:
+                            return new DateTime(date.Year, 4, 1);
+                        case 7:
+                        case 8:
+                        case 9:
+                            return new DateTime(date.Year, 7, 1);
+                        default:
+                            return new DateTime(date.Year, 10, 1);
+                    }
+                    case DateIntervalType.Year:
+                        return new DateTime(date.Year, 1, 1);
+                default:
+                    throw new NotSupportedException("This DateIntervalType not supported.");
+            }
         }
 
         /// <summary>
@@ -186,7 +219,7 @@ namespace SmallNetUtils.Extensions
         /// <param name="date"> Date </param>
         /// <param name="dateType"> DateInterval type </param>
         /// <returns> DateInterval </returns>
-        public static DateInterval GetDateInterval(this DateTime date, Microsoft.VisualBasic.DateInterval dateType)
+        public static DateInterval GetDateInterval(this DateTime date, DateIntervalType dateType)
         {
             if (!date.IsStartOfIntervalType(dateType))
             {

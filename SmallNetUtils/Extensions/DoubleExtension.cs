@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 
 namespace SmallNetUtils.Extensions
 {
@@ -27,7 +28,7 @@ namespace SmallNetUtils.Extensions
         /// <remarks> Useful to work with Excel/Word OLE </remarks>
         public static object Validate(this double value, string defaultValue)
         {
-            return value.HasActualValue() ? value : defaultValue;
+            return value.HasActualValue() ? value : (object)defaultValue;
         }
 
         /// <summary>

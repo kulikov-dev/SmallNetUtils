@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using SmallNetUtils.Utils;
 
@@ -32,7 +35,7 @@ namespace SmallNetUtils.Extensions
                 return text;
             }
 
-            return text[0].ToString().ToUpper() + text[1..].ToLower();
+            return text[0].ToString().ToUpper() + text.Substring(1).ToLower();
         }
 
         /// <summary>
@@ -85,8 +88,8 @@ namespace SmallNetUtils.Extensions
 
                 if (word.Length > lineLength)
                 {
-                    var head = word[..lineLength];
-                    var tail = word[lineLength..];
+                    var head = word.Substring(0, lineLength);
+                    var tail = word.Substring(lineLength);
 
                     word = head;
 
@@ -112,7 +115,7 @@ namespace SmallNetUtils.Extensions
         /// <param name="input"> Input text </param>
         /// <param name="delimiters"> Delimiters </param>
         /// <returns> Multiline </returns>
-        public static string CreateMultiLineByDelimiters(this string input, IEnumerable<string>? delimiters = null)
+        public static string CreateMultiLineByDelimiters(this string input, IEnumerable<string> delimiters = null)
         {
             if (delimiters == null || !delimiters.Any())
             {

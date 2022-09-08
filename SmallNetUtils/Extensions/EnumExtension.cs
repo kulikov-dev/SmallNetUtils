@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace SmallNetUtils.Extensions
 {
@@ -43,7 +45,7 @@ namespace SmallNetUtils.Extensions
         /// <param name="defaultValue"> Default value </param>
         /// <returns> An enum value </returns>
         /// <exception cref="InvalidEnumArgumentException"> Exception on not found enum by caption </exception>
-        public static object FromCaption<T>(Type type, string caption, object? defaultValue = null)
+        public static object FromCaption<T>(Type type, string caption, object defaultValue = null)
             where T : DescriptionAttribute
         {
             if (TryGetCaption<T>(type, caption, out var value))

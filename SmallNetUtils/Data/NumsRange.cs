@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using SmallNetUtils.Extensions;
 
 namespace SmallNetUtils.Data
@@ -12,16 +13,7 @@ namespace SmallNetUtils.Data
         /// <summary>
         /// Empty value
         /// </summary>
-        public static readonly NumsRange Empty = new();
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public NumsRange()
-        {
-            Min = double.MinValue;
-            Max = double.MaxValue;
-        }
+        public static readonly NumsRange Empty = new NumsRange(double.MinValue, double.MaxValue);
 
         /// <summary>
         /// Constructor with parameters
@@ -91,7 +83,7 @@ namespace SmallNetUtils.Data
         /// </summary>
         /// <param name="obj"> Second range </param>
         /// <returns> Flag if equals </returns>
-        public override bool Equals(object? obj)
+        public override bool Equals(object obj)
         {
             return obj is NumsRange other && Equals(other);
         }
@@ -102,7 +94,7 @@ namespace SmallNetUtils.Data
         /// <returns> Hashcode </returns>
         public override int GetHashCode()
         {
-            return HashCode.Combine(Min, Max);
+            return (Min + Max).GetHashCode();
         }
 
         /// <summary>
@@ -110,7 +102,7 @@ namespace SmallNetUtils.Data
         /// </summary>
         /// <param name="obj"> Second range </param>
         /// <returns> Compare result </returns>
-        public int CompareTo(object? obj)
+        public int CompareTo(object obj)
         {
             if (obj == null)
             {

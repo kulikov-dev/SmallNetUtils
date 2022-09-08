@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Security.Cryptography;
 
 namespace SmallNetUtils.Extensions
@@ -11,12 +13,12 @@ namespace SmallNetUtils.Extensions
         /// <summary>
         /// LRU last random colors
         /// </summary>
-        private static readonly List<Color> LastRandomColors = new();
+        private static readonly List<Color> LastRandomColors = new List<Color>();
 
         /// <summary>
         /// Randomize for color
         /// </summary>
-        private static readonly Random Random = new(DateTime.Now.Millisecond);
+        private static readonly Random Random = new Random(DateTime.Now.Millisecond);
 
         /// <summary>
         /// Steps to beatify colors generation
@@ -111,8 +113,13 @@ namespace SmallNetUtils.Extensions
         /// <returns> Color based on a hash </returns>
         public static Color GenerateColorFromString(string input)
         {
-            using var sha = SHA1.Create();
-            var hash = sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(input));
+            byte[] hash;
+
+            using (var sha = SHA1.Create())
+            {
+                hash = sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(input));
+            }
+
             var hashColor = Color.FromArgb(BitConverter.ToInt32(hash, 0));
             var alpha = hashColor.A;
             var r = (hashColor.R + alpha) % 256 / 32 * 32;
@@ -172,15 +179,21 @@ namespace SmallNetUtils.Extensions
             var iMid = Convert.ToInt32(fMid * 255);
             var iMin = Convert.ToInt32(fMin * 255);
 
-            return iSextant switch
+            switch (iSextant)
             {
-                1 => Color.FromArgb(alpha, iMid, iMax, iMin),
-                2 => Color.FromArgb(alpha, iMin, iMax, iMid),
-                3 => Color.FromArgb(alpha, iMin, iMid, iMax),
-                4 => Color.FromArgb(alpha, iMid, iMin, iMax),
-                5 => Color.FromArgb(alpha, iMax, iMin, iMid),
-                _ => Color.FromArgb(alpha, iMax, iMid, iMin)
-            };
+                case 1:
+                    return Color.FromArgb(alpha, iMid, iMax, iMin);
+                case 2:
+                    return Color.FromArgb(alpha, iMin, iMax, iMid);
+                case 3:
+                    return Color.FromArgb(alpha, iMin, iMid, iMax);
+                case 4:
+                    return Color.FromArgb(alpha, iMid, iMin, iMax);
+                case 5:
+                    return Color.FromArgb(alpha, iMax, iMin, iMid);
+                default:
+                    return Color.FromArgb(alpha, iMax, iMid, iMin);
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 
 namespace SmallNetUtils.Utils
 {
@@ -31,9 +32,9 @@ namespace SmallNetUtils.Utils
         /// <param name="objectValue"> Object </param>
         /// <param name="defaultStringValue"> Default objectValue for a null object </param>
         /// <returns> String representation of an object </returns>
-        public static string ToString(object? objectValue, string defaultStringValue = "")
+        public static string ToString(object objectValue, string defaultStringValue = "")
         {
-            return (objectValue is null or DBNull ? defaultStringValue : objectValue.ToString()) ?? string.Empty;
+            return (objectValue is null || objectValue == DBNull.Value ? defaultStringValue : objectValue.ToString()) ?? string.Empty;
         }
 
         /// <summary>
@@ -42,15 +43,19 @@ namespace SmallNetUtils.Utils
         /// <param name="objectValue"> Object </param>
         /// <returns> Boolean value </returns>
         /// <remarks> Support different representation of 'true' value like 1, YES, Y </remarks>
-        public static bool ToBool(object? objectValue)
+        public static bool ToBool(object objectValue)
         {
-            return objectValue switch
+            if (objectValue == null || objectValue == DBNull.Value)
             {
-                null => false,
-                bool b => b,
-                DBNull => false,
-                _ => ToBool(objectValue.ToString())
-            };
+                return false;
+            }
+
+            if (objectValue is bool value)
+            {
+                return value;
+            }
+
+            return ToBool(objectValue.ToString());
         }
 
         /// <summary>
@@ -59,7 +64,7 @@ namespace SmallNetUtils.Utils
         /// <param name="stringValue"> String value </param>
         /// <returns> Boolean value </returns>
         /// <remarks> Support different representation of 'true' value like 1, YES, Y. Process unicode BOM symbols </remarks>
-        public static bool ToBool(string? stringValue)
+        public static bool ToBool(string stringValue)
         {
             if (string.IsNullOrWhiteSpace(stringValue))
             {
@@ -68,7 +73,7 @@ namespace SmallNetUtils.Utils
 
             var clearValue = stringValue.Trim(TrimSymbols).ToUpperInvariant();
 
-            return clearValue == bool.TrueString || clearValue is "1" or "YES" or "Y" or "T";
+            return clearValue == bool.TrueString || clearValue == "1" || clearValue == "YES" || clearValue == "Y" || clearValue == "T";
         }
 
         /// <summary>
@@ -77,7 +82,7 @@ namespace SmallNetUtils.Utils
         /// <param name="stringValue"> String value </param>
         /// <returns> DateTime </returns>
         /// <remarks> Support both default string representation of DateTime and OLE automation date (Excel). Process unicode BOM symbols </remarks>
-        public static DateTime ToDateTime(string? stringValue)
+        public static DateTime ToDateTime(string stringValue)
         {
             return ToDateTime(stringValue, DateTime.MinValue);
         }
@@ -89,7 +94,7 @@ namespace SmallNetUtils.Utils
         /// <param name="outValue"> DateTime </param>
         /// <returns> Flag of successful parsing </returns>
         /// <remarks> Support both default string representation of DateTime and OLE automation date (Excel). Process unicode BOM symbols, DBull values </remarks>
-        public static bool ToDateTime(object? objectValue, out DateTime outValue)
+        public static bool ToDateTime(object objectValue, out DateTime outValue)
         {
             return ToDateTime(objectValue, DateTime.MinValue, out outValue);
         }
@@ -101,7 +106,7 @@ namespace SmallNetUtils.Utils
         /// <param name="defaultValue"> Default DateTime value </param>
         /// <returns> DateTime </returns>
         /// <remarks> Support both default string representation of DateTime and OLE automation date (Excel). Process unicode BOM symbols, DBull values </remarks>
-        public static DateTime ToDateTime(object? objectValue, DateTime defaultValue)
+        public static DateTime ToDateTime(object objectValue, DateTime defaultValue)
         {
             ToDateTime(objectValue, defaultValue, out var temp);
             return temp;
@@ -115,8 +120,15 @@ namespace SmallNetUtils.Utils
         /// <param name="outValue"> DateTime </param>
         /// <returns> Flag of successful parsing </returns>
         /// <remarks> Support both default string representation of DateTime and OLE automation date (Excel). Process unicode BOM symbols, DBull values </remarks>
-        public static bool ToDateTime(object? objectValue, DateTime defaultValue, out DateTime outValue)
+        public static bool ToDateTime(object objectValue, DateTime defaultValue, out DateTime outValue)
         {
+            outValue = defaultValue;
+
+            if (objectValue == DBNull.Value)
+            {
+                return false;
+            }
+
             switch (objectValue)
             {
                 case DateTime dateTime:
@@ -124,15 +136,7 @@ namespace SmallNetUtils.Utils
                     outValue = dateTime;
 
                     return true;
-                case DBNull:
-
-                    outValue = defaultValue;
-
-                    return false;
                 default:
-
-                    outValue = defaultValue;
-
                     return objectValue != null && ToDateTime(objectValue.ToString(), out outValue);
             }
         }
@@ -144,7 +148,7 @@ namespace SmallNetUtils.Utils
         /// <param name="defaultValue"> Default DateTime value </param>
         /// <returns> DateTime </returns>
         /// <remarks> Support both default string representation of DateTime and OLE automation date (Excel). Process unicode BOM symbols </remarks>
-        public static DateTime ToDateTime(string? stringValue, DateTime defaultValue)
+        public static DateTime ToDateTime(string stringValue, DateTime defaultValue)
         {
             ToDateTime(stringValue, defaultValue, out var temp);
             return temp;
@@ -157,7 +161,7 @@ namespace SmallNetUtils.Utils
         /// <param name="outValue"> DateTime </param>
         /// <returns> Flag of successful parsing </returns>
         /// <remarks> Support both default string representation of DateTime and OLE automation date (Excel). Process unicode BOM symbols </remarks>
-        public static bool ToDateTime(string? stringValue, out DateTime outValue)
+        public static bool ToDateTime(string stringValue, out DateTime outValue)
         {
             return ToDateTime(stringValue, DateTime.MinValue, out outValue);
         }
@@ -170,7 +174,7 @@ namespace SmallNetUtils.Utils
         /// <param name="outValue"> DateTime </param>
         /// <returns> Flag of successful parsing </returns>
         /// <remarks> Support both default string representation of DateTime and OLE automation date (Excel). Process unicode BOM symbols </remarks>
-        public static bool ToDateTime(string? stringValue, DateTime defaultValue, out DateTime outValue)
+        public static bool ToDateTime(string stringValue, DateTime defaultValue, out DateTime outValue)
         {
             outValue = defaultValue;
 
@@ -202,7 +206,7 @@ namespace SmallNetUtils.Utils
         /// <param name="stringValue"> String value </param>
         /// <returns> Double </returns>
         /// <remarks> Parsing with supports of CurrentFormatInfo. Process unicode BOM symbols </remarks>
-        public static double ToDouble(string? stringValue)
+        public static double ToDouble(string stringValue)
         {
             return ToDouble(stringValue, double.NaN);
         }
@@ -213,7 +217,7 @@ namespace SmallNetUtils.Utils
         /// <param name="objectValue"> Object value </param>
         /// <returns> Double value </returns>
         /// <remarks> Parsing with supports of CurrentFormatInfo. Process unicode BOM symbols, DBull values </remarks>
-        public static double ToDouble(object? objectValue)
+        public static double ToDouble(object objectValue)
         {
             return ToDouble(objectValue, double.NaN);
         }
@@ -225,7 +229,7 @@ namespace SmallNetUtils.Utils
         /// <param name="defaultValue"> Default double value </param>
         /// <returns> Double value </returns>
         /// <remarks> Parsing with supports of CurrentFormatInfo. Process unicode BOM symbols, DBull values </remarks>
-        public static double ToDouble(object? objectValue, double defaultValue)
+        public static double ToDouble(object objectValue, double defaultValue)
         {
             ToDouble(objectValue, defaultValue, out var temp);
             return temp;
@@ -238,7 +242,7 @@ namespace SmallNetUtils.Utils
         /// <param name="outValue"> Double </param>
         /// <returns> Flag of successful parsing </returns>
         /// <remarks> Parsing with supports of CurrentFormatInfo. Process unicode BOM symbols, DBull values </remarks>
-        public static bool ToDouble(object? objectValue, out double outValue)
+        public static bool ToDouble(object objectValue, out double outValue)
         {
             return ToDouble(objectValue, double.NaN, out outValue);
         }
@@ -251,9 +255,14 @@ namespace SmallNetUtils.Utils
         /// <param name="outValue"> Double </param>
         /// <returns> Flag of successful parsing </returns>
         /// <remarks> Parsing with supports of CurrentFormatInfo. Process unicode BOM symbols, DBull values </remarks>
-        public static bool ToDouble(object? objectValue, double defaultValue, out double outValue)
+        public static bool ToDouble(object objectValue, double defaultValue, out double outValue)
         {
             outValue = defaultValue;
+
+            if (objectValue == DBNull.Value)
+            {
+                return false;
+            }
 
             switch (objectValue)
             {
@@ -262,9 +271,6 @@ namespace SmallNetUtils.Utils
                     outValue = doubleValue;
 
                     return true;
-
-                case DBNull:
-                    return false;
 
                 default:
                     return objectValue != null && ToDouble(objectValue.ToString(), defaultValue, out outValue);
@@ -278,7 +284,7 @@ namespace SmallNetUtils.Utils
         /// <param name="defaultValue"> Default double value </param>
         /// <returns> Double </returns>
         /// <remarks> Parsing with supports of CurrentFormatInfo. Process unicode BOM symbols </remarks>
-        public static double ToDouble(string? stringValue, double defaultValue)
+        public static double ToDouble(string stringValue, double defaultValue)
         {
             ToDouble(stringValue, defaultValue, out var temp);
             return temp;
@@ -291,7 +297,7 @@ namespace SmallNetUtils.Utils
         /// <param name="outValue"> Double </param>
         /// <returns> Flag of successful parsing </returns>
         /// <remarks> Parsing with supports of CurrentFormatInfo. Process unicode BOM symbols </remarks>
-        public static bool ToDouble(string? stringValue, out double outValue)
+        public static bool ToDouble(string stringValue, out double outValue)
         {
             return ToDouble(stringValue, double.NaN, out outValue);
         }
@@ -304,7 +310,7 @@ namespace SmallNetUtils.Utils
         /// <param name="outValue"> Double </param>
         /// <returns> Flag of successful parsing </returns>
         /// <remarks> Parsing with supports of CurrentFormatInfo. Process unicode BOM symbols </remarks>
-        public static bool ToDouble(string? stringValue, double defaultValue, out double outValue)
+        public static bool ToDouble(string stringValue, double defaultValue, out double outValue)
         {
             outValue = defaultValue;
 
@@ -361,7 +367,7 @@ namespace SmallNetUtils.Utils
         /// <param name="stringValue"> String value </param>
         /// <param name="defaultValue"> Default int value </param>
         /// <returns> Int </returns>
-        public static int ToInt(string? stringValue, int defaultValue = int.MinValue)
+        public static int ToInt(string stringValue, int defaultValue = int.MinValue)
         {
             ToInt(stringValue, defaultValue, out var temp);
             return temp;
@@ -373,7 +379,7 @@ namespace SmallNetUtils.Utils
         /// <param name="objectValue"> Object value </param>
         /// <param name="defaultValue"> Default int value </param>
         /// <returns> Int </returns>
-        public static int ToInt(object? objectValue, int defaultValue = int.MinValue)
+        public static int ToInt(object objectValue, int defaultValue = int.MinValue)
         {
             ToInt(objectValue, defaultValue, out var temp);
             return temp;
@@ -385,7 +391,7 @@ namespace SmallNetUtils.Utils
         /// <param name="objectValue"> Object value </param>
         /// <param name="outValue"> Int </param>
         /// <returns> Flag of successful parsing </returns>
-        public static bool ToInt(object? objectValue, out int outValue)
+        public static bool ToInt(object objectValue, out int outValue)
         {
             return ToInt(objectValue, int.MinValue, out outValue);
         }
@@ -397,9 +403,14 @@ namespace SmallNetUtils.Utils
         /// <param name="defaultValue"> Default int value </param>
         /// <param name="outValue"> Int </param>
         /// <returns> Flag of successful parsing </returns>
-        public static bool ToInt(object? objectValue, int defaultValue, out int outValue)
+        public static bool ToInt(object objectValue, int defaultValue, out int outValue)
         {
             outValue = defaultValue;
+
+            if (objectValue == DBNull.Value)
+            {
+                return false;
+            }
 
             switch (objectValue)
             {
@@ -408,9 +419,6 @@ namespace SmallNetUtils.Utils
                     outValue = intValue;
 
                     return true;
-
-                case DBNull:
-                    return false;
 
                 default:
                     return objectValue != null && ToInt(objectValue.ToString(), defaultValue, out outValue);
@@ -424,7 +432,7 @@ namespace SmallNetUtils.Utils
         /// <param name="defaultValue"> Default int value </param>
         /// <param name="outValue"> Int </param>
         /// <returns> Flag of successful parsing </returns>
-        public static bool ToInt(string? stringValue, int defaultValue, out int outValue)
+        public static bool ToInt(string stringValue, int defaultValue, out int outValue)
         {
             outValue = defaultValue;
 

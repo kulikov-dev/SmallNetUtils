@@ -1,4 +1,7 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using SmallNetUtils.Enums;
 using SmallNetUtils.Extensions;
 
 namespace SmallNetUtils.Data
@@ -12,7 +15,7 @@ namespace SmallNetUtils.Data
         /// <summary>
         /// Empty value
         /// </summary>
-        public static readonly DateInterval Empty = new(DateTime.MaxValue, DateTime.MinValue);
+        public static readonly DateInterval Empty = new DateInterval(DateTime.MaxValue, DateTime.MinValue);
 
         /// <summary>
         /// Start of an interval
@@ -98,14 +101,19 @@ namespace SmallNetUtils.Data
         /// <returns> Merged interval </returns>
         public static DateInterval operator |(DateInterval item1, DateInterval item2)
         {
-            return item1.IsEmpty switch
+            if (item1.IsEmpty && !item2.IsEmpty)
             {
-                true when !item2.IsEmpty => item2,
-                false when item2.IsEmpty => item1,
-                _ => new DateInterval(
-                    new DateTime(Math.Min(item1.Begin.Ticks, item2.Begin.Ticks)),
-                    new DateTime(Math.Max(item1.End.Ticks, item2.End.Ticks)))
-            };
+                return item2;
+            }
+
+            if (item2.IsEmpty && !item1.IsEmpty)
+            {
+                return item1;
+            }
+
+            return new DateInterval(
+                new DateTime(Math.Min(item1.Begin.Ticks, item2.Begin.Ticks)),
+                new DateTime(Math.Max(item1.End.Ticks, item2.End.Ticks)));
         }
 
         /// <summary>
@@ -126,7 +134,7 @@ namespace SmallNetUtils.Data
         /// </summary>
         /// <param name="obj"> Second interval </param>
         /// <returns> Flag if equals </returns>
-        public override bool Equals(object? obj)
+        public override bool Equals(object obj)
         {
             var item2 = obj as DateInterval? ?? Empty;
 
@@ -165,7 +173,7 @@ namespace SmallNetUtils.Data
         /// </summary>
         /// <param name="dateType"> Interval type </param>
         /// <returns> Flag if equal </returns>
-        public bool IsEqualToIntervalType(Microsoft.VisualBasic.DateInterval dateType)
+        public bool IsEqualToIntervalType(DateIntervalType dateType)
         {
             return Begin.IsStartOfIntervalType(dateType) && End == End.AddByType(dateType);
         }
@@ -240,7 +248,7 @@ namespace SmallNetUtils.Data
         /// </summary>
         /// <param name="intervalType"> Size of intervals </param>
         /// <returns> Splitted DateIntervals </returns>
-        public IEnumerable<DateInterval> Split(Microsoft.VisualBasic.DateInterval intervalType)
+        public IEnumerable<DateInterval> Split(DateIntervalType intervalType)
         {
             var result = new List<DateInterval>();
             var dateBegin = Begin;
