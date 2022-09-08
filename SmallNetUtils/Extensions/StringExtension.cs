@@ -107,7 +107,7 @@ namespace SmallNetUtils.Extensions
         }
 
         /// <summary>
-        /// Convert input text to multiline length with lines of delimiters.
+        /// Convert input text to multiline separated by delimiters.
         /// </summary>
         /// <param name="input"> Input text </param>
         /// <param name="delimiters"> Delimiters </param>

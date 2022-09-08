@@ -238,20 +238,20 @@ namespace SmallNetUtils.Data
         /// <summary>
         /// Split interval for intervals based on a IntervalType
         /// </summary>
-        /// <param name="size"> Size of intervals </param>
+        /// <param name="intervalType"> Size of intervals </param>
         /// <returns> Splitted DateIntervals </returns>
-        public IEnumerable<DateInterval> Split(Microsoft.VisualBasic.DateInterval size)
+        public IEnumerable<DateInterval> Split(Microsoft.VisualBasic.DateInterval intervalType)
         {
             var result = new List<DateInterval>();
             var dateBegin = Begin;
-            var dateEnd = Begin.AddByType(size);
+            var dateEnd = Begin.AddByType(intervalType);
 
             while (dateEnd <= End)
             {
                 result.Add(new DateInterval(dateBegin, dateEnd));
 
                 dateBegin = dateEnd;
-                dateEnd = dateEnd.AddByType(size);
+                dateEnd = dateEnd.AddByType(intervalType);
             }
 
             return result;

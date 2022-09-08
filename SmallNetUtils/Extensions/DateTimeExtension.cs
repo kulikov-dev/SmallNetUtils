@@ -128,13 +128,13 @@ namespace SmallNetUtils.Extensions
         }
 
         /// <summary>
-        /// Substracting amount to a date by DateInterval type
+        /// Subtracting amount to a date by DateInterval type
         /// </summary>
         /// <param name="date"> Date </param>
         /// <param name="dateType"> DateInterval type </param>
-        /// <param name="amount"> Amount to substract </param>
+        /// <param name="amount"> Amount to subtract </param>
         /// <returns> Date by subtracting amount </returns>
-        public static DateTime SubtactByType(this DateTime date, Microsoft.VisualBasic.DateInterval dateType, int amount = 1)
+        public static DateTime SubtractByType(this DateTime date, Microsoft.VisualBasic.DateInterval dateType, int amount = 1)
         {
             return dateType switch
             {
@@ -147,7 +147,7 @@ namespace SmallNetUtils.Extensions
         }
 
         /// <summary>
-        /// Ceil date by DateInterval date
+        /// Ceil date to DateInterval date
         /// </summary>
         /// <param name="date"> Date </param>
         /// <param name="dateType"> DateInterval type </param>
@@ -158,7 +158,7 @@ namespace SmallNetUtils.Extensions
         }
 
         /// <summary>
-        /// Floor date by DateInterval date
+        /// Floor date to DateInterval date
         /// </summary>
         /// <param name="date"> Date </param>
         /// <param name="dateType"> DateInterval type </param>
