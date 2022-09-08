@@ -2,7 +2,8 @@
   A bunch of small utils and extensions which I often used in different projects on .NET. 
 
 #### Data classes
-DateInterval, NumsRange
+* DateInterval: Class to store interval of two DateTime values. Allows to check intersection/including, equality and split interval by DateIntervalType.
+* NumsRange: Class to store double range min-max. Contains <b>NumsRangeUtil</b> with few methods to create a list of NumsRange based on rules: by range size, by ranges amount.
 
 #### Extensions
 * StringExtension:
@@ -23,7 +24,30 @@ DateInterval, NumsRange
   3. <b>EqualsEpsilon, EqualsEpsilonNaN, EqualsEpsilonNanInf</b>: equal two numbers with epsilon to fix floating-point comparison issue. Supports Nan and Infinitives to compare; 
   6. <b>RoundToSignificant</b>: Round number up to significant digits;
 * DateTimeExtension:
-* EnumExtension:
+  1. <b>IsMidnight</b>: Check if date is midnight
+  2. <b>IsMonthStart</b>: Check if date is month start
+  3. <b>IsQuarterStart</b>: Check if date is quarter start
+  4. <b>IsYearStart</b>: Check if date is year start
+  5. <b>GetQuarter</b>: Get date quarter (number/arabic number)
+  6. <b>IsStartOfIntervalType</b>: Check if date is start of DateInterval type (day/month/quarter/etc)
+  7. <b>AddByType/SubtractByType</b>: Addition/Subtracting amount to a date by DateInterval type
+  8. <b>Ceil/Floor</b>: Ceil/floor date by DateInterval
+  9. <b>GetDateInterval</b>: Convert DateTime to DateInterval according to DateInterval type
+* EnumExtension: Useful methods to work with enums:
+  1. Allows to get caption/enum-value by DescriptionAttribute;
+  2. Fill different DevExpress editors with enum values.
+  ``` csharp
+    public enum TestEnum
+    {
+        [Description("Show angles on the map")]
+        Angles,
+
+        [Description("Show axis on the graph")]
+        Axis
+    }
+    
+    var caption = TestEnum.Angles.GetCaption();
+  ```
 #### Utils
 * ConvertUtil. Some useful methods to extend a System.Convert library. All convert metods Process Unicode BOM symbols, DBull values.
   1. <b>ToString</b>: Convert an object to string. If object empty - can return string default value;
@@ -44,5 +68,3 @@ DateInterval, NumsRange
   4. <b>ConvertDateIntervalsToDateTime</b>: Convert list of DateInterval to list of DateTime;
   5. <b>ConvertDateTimeToDateIntervals</b>: Convert list of DateTime to list of DateInterval;
   6. <b>Merge</b>: Merge consecutive dates into one DateInterval.
-* NumsRangeUtil - contains few methods to create list of NumsRange based on rules: by range size, by ranges amount.
-
