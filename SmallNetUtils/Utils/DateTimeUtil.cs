@@ -33,6 +33,35 @@ namespace SmallNetUtils.Utils
         }
 
         /// <summary>
+        /// Round DateTime to upper variant
+        /// </summary>
+        /// <param name="dateTime"> DateTime </param>
+        /// <param name="diff"> Diff to round </param>
+        /// <returns> Rounded DateTime </returns>
+        /// <remarks>  16:59 becomes  17:00 </remarks>
+        public static DateTime RoundUp(this DateTime dateTime, TimeSpan diff)
+        {
+            var modTicks = dateTime.Ticks % diff.Ticks;
+            var delta = modTicks != 0 ? diff.Ticks - modTicks : 0;
+
+            return new DateTime(dateTime.Ticks + delta, dateTime.Kind);
+        }
+
+        /// <summary>
+        /// Round DateTime to lower variant
+        /// </summary>
+        /// <param name="dateTime"> DateTime </param>
+        /// <param name="diff"> Diff to round </param>
+        /// <returns> Rounded DateTime </returns>
+        /// <remarks>  16:59 becomes  16:55 </remarks>
+        public static DateTime RoundDown(this DateTime dateTime, TimeSpan diff)
+        {
+            var delta = dateTime.Ticks % diff.Ticks;
+
+            return new DateTime(dateTime.Ticks - delta, dateTime.Kind);
+        }
+
+        /// <summary>
         /// Get difference between two dates in months
         /// </summary>
         /// <param name="date1"> Date 1 </param>
