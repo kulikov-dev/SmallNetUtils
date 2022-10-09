@@ -12,7 +12,8 @@
   3. <b>AddHtmlTag</b>: Wrap string with a HTML tag;
   4. <b>RemoveHtmlTags</b>: Remove all HTML tags from string;
   5. <b>CreateMultiLineByLength</b>: Convert input text to multiline length with lines of specific row length. Preserve words;
-  6. <b>CreateMultiLineByDelimiters</b>: Convert input text to multiline separated by delimiters.
+  6. <b>CreateMultiLineByDelimiters</b>: Convert input text to multiline separated by delimiters;
+  7. <b>Append</b>: Allow to append new line to a StringBuilder with delimeter (like spaces).
 * ColorExtension:
   1. <b>GetRandomColor</b>: Get nice random color. Use LRU cache to create unique colors;
   2. <b>Lightend, Darken</b>: Tints the color by the given percent;

@@ -129,5 +129,21 @@ namespace SmallNetUtils.Extensions
 
             return string.Join(Environment.NewLine, lines.ToArray());
         }
+
+        /// <summary>
+        /// Allow to append new line to a StringBuilder with delimeter (like spaces)
+        /// </summary>
+        /// <param name="stringBuilder"> StringBuilder </param>
+        /// <param name="input"> Input string </param>
+        /// <param name="delimiter"> Delimeter between strings </param>
+        public static void Append(this StringBuilder stringBuilder, string input, string delimiter)
+        {
+            if (stringBuilder.Length != 0)
+            {
+                stringBuilder.Append(delimiter);
+            }
+
+            stringBuilder.Append(input);
+        }
     }
 }
