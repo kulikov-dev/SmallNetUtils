@@ -69,3 +69,5 @@
   4. <b>ConvertDateIntervalsToDateTime</b>: Convert list of DateInterval to list of DateTime;
   5. <b>ConvertDateTimeToDateIntervals</b>: Convert list of DateTime to list of DateInterval;
   6. <b>Merge</b>: Merge consecutive dates into one DateInterval.
+* FormsUtil
+  1. <b>IsDesignMode</b>: Check if a form opened in Designer mode;
