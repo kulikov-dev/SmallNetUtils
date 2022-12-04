@@ -154,5 +154,58 @@ namespace SmallNetUtils.Utils
             // you may wish to return null instead of defaulting to ASCII
             return Encoding.Default;
         }
+
+        /// <summary>
+        /// Get file extension, based on a file, encoded in Base64
+        /// </summary>
+        /// <param name="base64String"> File encoded in Base64 </param>
+        /// <returns> File extension. Empty - if not detected </returns>
+        public static string GetFileExtension(string base64String)
+        {
+            var bomPrefix = "77U/";
+            int bomIndex = base64String.IndexOf(bomPrefix, StringComparison.InvariantCultureIgnoreCase);
+            base64String = bomIndex < 0
+                ? base64String
+                : base64String.Remove(bomIndex, bomPrefix.Length);
+            var data = base64String.Substring(0, 5);
+
+            switch (data.ToUpper())
+            {
+                case "IVBOR":
+                    return "png";
+
+                case "/9J/4":
+                    return "jpg";
+
+                case "AAAAF":
+                    return "mp4";
+
+                case "JVBER":
+                    return "pdf";
+
+                case "AAABA":
+                    return "ico";
+
+                case "UMFYI":
+                    return "rar";
+
+                case "E1XYD":
+                    return "rtf";
+
+                case "U1PKC":
+                    return "txt";
+
+                case "MQOWM":
+                case "77U/M":
+                    return "srt";
+
+                case "PHNJA":
+                case "PD94B":
+                    return "xml";
+
+                default:
+                    return string.Empty;
+            }
+        }
     }
 }

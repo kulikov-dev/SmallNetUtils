@@ -62,7 +62,8 @@
   2. <b>LaunchFile</b>: Launch file in an assigned application or show it in the Explorer;
   3. <b>OpenFolder</b>: Open a folder in the Explorer;
   4. <b>ShowFileInExplorer</b>: Open the Explorer and focus on a file;
-  5. <b>ValidateFileName</b>: Validate and return valid filename.
+  5. <b>ValidateFileName</b>: Validate and return valid filename;
+  6. <b>GetFileExtension</b>: Get file extension for a file, encoded in Base64 string.
 * DateTimeUtil
   1. <b>Min/Max</b>: Get bigger/smaller date between two of them;
   2. <b>MonthsBetween</b>: Get difference between two dates in months;
