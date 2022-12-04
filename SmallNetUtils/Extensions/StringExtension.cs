@@ -145,5 +145,15 @@ namespace SmallNetUtils.Extensions
 
             stringBuilder.Append(input);
         }
+
+        /// <summary>
+        /// Convert string from Base64
+        /// </summary>
+        /// <param name="stringBase64"> String in Base64 </param>
+        /// <returns> String in UTF8 </returns>
+        public static string ConvertFromBase64(string stringBase64)
+        {
+            return Encoding.UTF8.GetString(Convert.FromBase64String(stringBase64));
+        }
     }
 }
