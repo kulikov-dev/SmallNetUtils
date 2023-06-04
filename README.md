@@ -73,3 +73,6 @@
   6. <b>Merge</b>: Merge consecutive dates into one DateInterval.
 * FormsUtil
   1. <b>IsDesignMode</b>: Check if a form opened in Designer mode;
+* DPIUtil
+  1. <b>GetDpi</b>: Get DPI: for a monitor, if OS supports DPI per monitor or for a control
+  2. <b>ScaleFactor</b>: Get scale factor for each monitor (100%, 125%, etc.). If possible and OS supports DPI per monitor.
